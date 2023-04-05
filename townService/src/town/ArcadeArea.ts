@@ -6,13 +6,21 @@ import InteractableArea from './InteractableArea';
 // Add Function to add players to Arcade Area
 
 export default class ArcadeArea extends InteractableArea {
-  private _game?: string;
+  private _name: string | undefined;
+
+  private _game: string | undefined;
 
   private _elapsedTimeSec: number;
 
-  private _isPlaying!: boolean;
+  private _isPlaying: boolean;
 
-  private _score!: number;
+  private _score: number;
+
+  private _defaultGameURL: string | undefined;
+
+  public get name() {
+    return this._name;
+  }
 
   public get game() {
     return this._game;
@@ -30,6 +38,10 @@ export default class ArcadeArea extends InteractableArea {
     return this._score;
   }
 
+  public get defaultGameURL() {
+    return this._defaultGameURL;
+  }
+
   /**
    * Creates a new Arcade Area
    * @param arcadeArea model containing this area's starting state
@@ -37,15 +49,17 @@ export default class ArcadeArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { id, isPlaying, elapsedTimeSec: progress, game, score }: ArcadeAreaModel,
+    { name, id, isPlaying, elapsedTimeSec: progress, game, score, defaultGameURL }: ArcadeAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
+    this._name = name;
     this._game = game;
     this._elapsedTimeSec = progress;
     this._isPlaying = isPlaying;
     this._score = score;
+    this._defaultGameURL = defaultGameURL;
   }
 
   /**
@@ -69,11 +83,12 @@ export default class ArcadeArea extends InteractableArea {
    *
    * @param arcadeArea updated model
    */
-  public updateModel({ isPlaying, elapsedTimeSec: progress, game, score }: ArcadeAreaModel) {
+  public updateModel({ name, isPlaying, elapsedTimeSec: progress, game, score }: ArcadeAreaModel) {
     this._game = game;
     this._isPlaying = isPlaying;
     this._elapsedTimeSec = progress;
     this._score = score;
+    this._name = name;
   }
 
   /**
@@ -87,6 +102,8 @@ export default class ArcadeArea extends InteractableArea {
       isPlaying: this._isPlaying,
       elapsedTimeSec: this._elapsedTimeSec,
       score: this._score,
+      defaultGameURL: this._defaultGameURL,
+      name: this._name,
     };
   }
 
@@ -103,7 +120,7 @@ export default class ArcadeArea extends InteractableArea {
     }
     const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
     return new ArcadeArea(
-      { isPlaying: false, id: name, score: 0, elapsedTimeSec: 0 },
+      { isPlaying: false, id: name, score: 0, elapsedTimeSec: 0, defaultGameURL: '', name: '' },
       rect,
       townEmitter,
     );

@@ -70,11 +70,13 @@ export interface ViewingArea {
 };
 
 export interface ArcadeArea {
+  defaultGameURL?: string | undefined;
   id: string;
   game?: string;
   isPlaying: boolean;
   elapsedTimeSec: number;
   score: number;
+  name: string | undefined;
 };
 
 export interface ServerToClientEvents {
