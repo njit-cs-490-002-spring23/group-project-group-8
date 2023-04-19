@@ -13,24 +13,25 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useViewingAreaController } from '../../../classes/TownController';
+import { useArcadeAreaController } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
-import { ViewingArea as ViewingAreaModel } from '../../../types/CoveyTownSocket';
-import ViewingArea from './ViewingArea';
+import { ArcadeArea as ArcadeAreaModel } from '../../../types/CoveyTownSocket';
+import ArcadeArea from './ArcadeArea';
 
-export default function SelectVideoModal({
+export default function SelectGameModal({
   isOpen,
   close,
-  viewingArea,
+  arcadeArea,
 }: {
   isOpen: boolean;
   close: () => void;
-  viewingArea: ViewingArea;
+  arcadeArea: ArcadeArea;
 }): JSX.Element {
   const coveyTownController = useTownController();
-  const viewingAreaController = useViewingAreaController(viewingArea?.name);
+  const arcadeAreaController = useArcadeAreaController(arcadeArea?.name);
 
-  const [video, setVideo] = useState<string>(viewingArea?.defaultVideoURL || '');
+  const [game, setGame] = useState<string>(arcadeArea?.game || '');
+  console.log(SelectGameModal);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,7 +39,7 @@ export default function SelectVideoModal({
     } else {
       coveyTownController.unPause();
     }
-  }, [coveyTownController, isOpen, viewingArea]);
+  }, [coveyTownController, isOpen, arcadeArea]);
 
   const closeModal = useCallback(() => {
     coveyTownController.unPause();
@@ -47,25 +48,26 @@ export default function SelectVideoModal({
 
   const toast = useToast();
 
-  const createViewingArea = useCallback(async () => {
-    if (video && viewingAreaController) {
-      const request: ViewingAreaModel = {
-        id: viewingAreaController.id,
-        video,
-        isPlaying: true,
+  const createArcadeArea = useCallback(async () => {
+    if (game && arcadeAreaController) {
+      const request: ArcadeAreaModel = {
+        id: arcadeAreaController.id,
+        game,
+        inSession: true,
         elapsedTimeSec: 0,
+        score: 0,
       };
       try {
-        await coveyTownController.createViewingArea(request);
+        await coveyTownController.createArcadeArea(request);
         toast({
-          title: 'Video set!',
+          title: 'Game set!',
           status: 'success',
         });
         coveyTownController.unPause();
       } catch (err) {
         if (err instanceof Error) {
           toast({
-            title: 'Unable to set video URL',
+            title: 'Unable to set game URL',
             description: err.toString(),
             status: 'error',
           });
@@ -78,7 +80,7 @@ export default function SelectVideoModal({
         }
       }
     }
-  }, [video, coveyTownController, viewingAreaController, toast]);
+  }, [game, coveyTownController, arcadeAreaController, toast]);
 
   return (
     <Modal
@@ -89,27 +91,22 @@ export default function SelectVideoModal({
       }}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Pick a video to watch in {viewingAreaController?.id} </ModalHeader>
+        <ModalHeader>Pick a game to play in {arcadeAreaController?.id} </ModalHeader>
         <ModalCloseButton />
         <form
           onSubmit={ev => {
             ev.preventDefault();
-            createViewingArea();
+            createArcadeArea();
           }}>
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel htmlFor='video'>Video URL</FormLabel>
-              <Input
-                id='video'
-                name='video'
-                value={video}
-                onChange={e => setVideo(e.target.value)}
-              />
+              <FormLabel htmlFor='game'>Game URL</FormLabel>
+              <Input id='game' name='game' value={game} onChange={e => setGame(e.target.value)} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={createViewingArea}>
-              Set video
+            <Button colorScheme='blue' mr={3} onClick={createArcadeArea}>
+              Set game
             </Button>
             <Button onClick={closeModal}>Cancel</Button>
           </ModalFooter>
