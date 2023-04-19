@@ -6,6 +6,7 @@ export type KnownInteractableTypes =
   | 'conversationArea'
   | 'viewingArea'
   | 'arcadeArea'
+  | 'kartDashArea'
   | 'transporter';
 
 /**

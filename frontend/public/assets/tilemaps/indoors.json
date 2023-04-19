@@ -1489,10 +1489,10 @@
           "y": 1070.66683333333
         },
         {
-          "type": "ArcadeArea",
+          "type": "KartDashArea",
           "height": 155,
-          "id": 10021,
-          "name": "Arcade",
+          "id": 30,
+          "name": "Kart Dash",
           "rotation": 0,
           "visible": true,
           "width": 230,
@@ -1500,7 +1500,7 @@
           "y": 826.5,
           "properties": [
             {
-              "name": "games",
+              "name": "game",
               "type": "string",
               "value": "Games"
             }
@@ -1509,7 +1509,7 @@
         {
           "type": "ConversationArea",
           "height": 223.999666666667,
-          "id": 30,
+          "id": 31,
           "name": "Basement Dining Table 1",
           "rotation": 0,
           "visible": true,
@@ -1520,7 +1520,7 @@
         {
           "type": "ConversationArea",
           "height": 224,
-          "id": 31,
+          "id": 32,
           "name": "Basement Dining Table 2",
           "rotation": 0,
           "visible": true,
@@ -1531,7 +1531,7 @@
         {
           "type": "ViewingArea",
           "height": 123.333333333333,
-          "id": 35,
+          "id": 33,
           "name": "Fish tank",
           "properties": [
             {
@@ -1555,7 +1555,7 @@
             {
               "name": "video",
               "type": "string",
-              "value": "https://www.youtube.com/watch?v=GEgheE1rdXo"
+              "value": ""
             }
           ],
           "rotation": 0,

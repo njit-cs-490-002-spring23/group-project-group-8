@@ -31,6 +31,7 @@ export default function SelectGameModal({
   const arcadeAreaController = useArcadeAreaController(arcadeArea?.name);
 
   const [game, setGame] = useState<string>(arcadeArea?.game || '');
+  console.log(SelectGameModal);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,7 +39,7 @@ export default function SelectGameModal({
     } else {
       coveyTownController.unPause();
     }
-  }, [coveyTownController, isOpen]);
+  }, [coveyTownController, isOpen, arcadeArea]);
 
   const closeModal = useCallback(() => {
     coveyTownController.unPause();
@@ -50,13 +51,11 @@ export default function SelectGameModal({
   const createArcadeArea = useCallback(async () => {
     if (game && arcadeAreaController) {
       const request: ArcadeAreaModel = {
-        name: arcadeAreaController.name,
         id: arcadeAreaController.id,
-        game: arcadeAreaController.game,
-        isPlaying: true,
+        game,
+        inSession: true,
         elapsedTimeSec: 0,
         score: 0,
-        defaultGameURL: arcadeAreaController.defaultGameURL,
       };
       try {
         await coveyTownController.createArcadeArea(request);

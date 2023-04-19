@@ -10,7 +10,7 @@ export type ArcadeAreaEvents = {
    * A gameChange event indicates that the start/pause state has changed.
    * Listeners are passed the new state in the parameter 'isPlaying'
    */
-  startChange: (isPlaying: boolean) => void;
+  startGame: (inSession: boolean) => void;
   /**
    * A progressChange event indicates that the progress of the game has changed, either
    * due to the user quitting the game, or the end has naturally come to an end.
@@ -40,9 +40,9 @@ export type ArcadeAreaEvents = {
 export default class ArcadeAreaController extends (EventEmitter as new () => TypedEventEmitter<ArcadeAreaEvents>) {
   private _model: ArcadeAreaModel;
 
-  name: string | undefined;
+  //private _name: string | undefined;
 
-  defaultGameURL: string | undefined;
+  //defaultGameURL: string | undefined;
 
   /**
    * Constructs a new ArcadeAreaController, initialized with the state of the
@@ -91,7 +91,7 @@ export default class ArcadeAreaController extends (EventEmitter as new () => Typ
   public set elapsedTimeSec(elapsedTimeSec: number) {
     if (this._model.elapsedTimeSec != elapsedTimeSec) {
       this._model.elapsedTimeSec = elapsedTimeSec;
-      this.emit('startChange', true);
+      this.emit('progressChange', elapsedTimeSec);
     }
   }
 
@@ -118,8 +118,8 @@ export default class ArcadeAreaController extends (EventEmitter as new () => Typ
    * The start/pause state - true indicating that the video is being played, false indicating
    * that the game is paused.
    */
-  public get isPlaying() {
-    return this._model.isPlaying;
+  public get inSession() {
+    return this._model.inSession;
   }
 
   /**
@@ -128,10 +128,10 @@ export default class ArcadeAreaController extends (EventEmitter as new () => Typ
    *
    * Changing this value will emit a 'startChange' event to listeners
    */
-  public set isPlaying(isPlaying: boolean) {
-    if (this._model.isPlaying != isPlaying) {
-      this._model.isPlaying = isPlaying;
-      this.emit('startChange', isPlaying);
+  public set inSession(inSession: boolean) {
+    if (this._model.inSession != inSession) {
+      this._model.inSession = inSession;
+      this.emit('startGame', inSession);
     }
   }
 
@@ -149,7 +149,7 @@ export default class ArcadeAreaController extends (EventEmitter as new () => Typ
    * @param updateModel
    */
   public updateFrom(updateModel: ArcadeAreaModel): void {
-    this.isPlaying = updateModel.isPlaying;
+    this.inSession = updateModel.inSession;
     this.elapsedTimeSec = updateModel.elapsedTimeSec;
     this.game = updateModel.game;
     this.score = updateModel.score;

@@ -4,7 +4,7 @@ import { BroadcastOperator } from 'socket.io';
 import IVideoClient from '../lib/IVideoClient';
 import Player from '../lib/Player';
 import TwilioVideo from '../lib/TwilioVideo';
-import { isViewingArea } from '../TestUtils';
+import { isViewingArea, isArcadeArea } from '../TestUtils';
 import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
@@ -158,6 +158,24 @@ export default class Town {
         }
       }
     });
+
+    // Set up a listener to process updates to interactables.
+    // Currently only knows how to process updates for ViewingArea's, and
+    // ignores any other updates for any other kind of interactable.
+    // For ViewingArea's: dispatches an updateModel call to the viewingArea that
+    // corresponds to the interactable being updated. Does not throw an error if
+    // the specified viewing area does not exist.
+    socket.on('interactableUpdate', (update: Interactable) => {
+      if (isArcadeArea(update)) {
+        newPlayer.townEmitter.emit('interactableUpdate', update);
+        const arcadeArea = this._interactables.find(
+          eachInteractable => eachInteractable.id === update.id,
+        );
+        if (arcadeArea) {
+          (arcadeArea as ArcadeArea).updateModel(update);
+        }
+      }
+    });
     return newPlayer;
   }
 
@@ -295,7 +313,7 @@ export default class Town {
    *  Adds any players who are in the region defined by the Aracde area to it.
    *  Notifies all players in the town that the Arcade area has been updated
    *
-   * @param aracdeArea Information describing the Arcade area to create. Ignores any
+   * @param arcadeArea Information describing the Arcade area to create. Ignores any
    *  occupantsById that are set on the Arcade area that is passed to this method.
    *
    * @returns true if the arcade area is successfully created, or false if there is no known

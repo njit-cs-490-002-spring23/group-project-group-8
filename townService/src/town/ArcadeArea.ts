@@ -12,7 +12,7 @@ export default class ArcadeArea extends InteractableArea {
 
   private _elapsedTimeSec: number;
 
-  private _isPlaying: boolean;
+  private _inSession: boolean;
 
   private _score: number;
 
@@ -30,8 +30,8 @@ export default class ArcadeArea extends InteractableArea {
     return this._elapsedTimeSec;
   }
 
-  public get isPlaying() {
-    return this._isPlaying;
+  public get inSession() {
+    return this._inSession;
   }
 
   public get score() {
@@ -49,17 +49,15 @@ export default class ArcadeArea extends InteractableArea {
    * @param townEmitter a broadcast emitter that can be used to emit updates to players
    */
   public constructor(
-    { name, id, isPlaying, elapsedTimeSec: progress, game, score, defaultGameURL }: ArcadeAreaModel,
+    { id, inSession, elapsedTimeSec: progress, game, score }: ArcadeAreaModel,
     coordinates: BoundingBox,
     townEmitter: TownEmitter,
   ) {
     super(id, coordinates, townEmitter);
-    this._name = name;
     this._game = game;
     this._elapsedTimeSec = progress;
-    this._isPlaying = isPlaying;
+    this._inSession = inSession;
     this._score = score;
-    this._defaultGameURL = defaultGameURL;
   }
 
   /**
@@ -83,12 +81,11 @@ export default class ArcadeArea extends InteractableArea {
    *
    * @param arcadeArea updated model
    */
-  public updateModel({ name, isPlaying, elapsedTimeSec: progress, game, score }: ArcadeAreaModel) {
+  public updateModel({ inSession, elapsedTimeSec: progress, game, score }: ArcadeAreaModel) {
     this._game = game;
-    this._isPlaying = isPlaying;
+    this._inSession = inSession;
     this._elapsedTimeSec = progress;
     this._score = score;
-    this._name = name;
   }
 
   /**
@@ -99,11 +96,9 @@ export default class ArcadeArea extends InteractableArea {
     return {
       id: this.id,
       game: this._game,
-      isPlaying: this._isPlaying,
+      inSession: this._inSession,
       elapsedTimeSec: this._elapsedTimeSec,
       score: this._score,
-      defaultGameURL: this._defaultGameURL,
-      name: this._name,
     };
   }
 
@@ -120,11 +115,9 @@ export default class ArcadeArea extends InteractableArea {
     }
     const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
     return new ArcadeArea(
-      { isPlaying: false, id: name, score: 0, elapsedTimeSec: 0, defaultGameURL: '', name: '' },
+      { inSession: false, id: name, score: 0, elapsedTimeSec: 0 },
       rect,
       townEmitter,
     );
   }
 }
-
-// Must have arcadeModel setup in CoveyTownSocket!!!!

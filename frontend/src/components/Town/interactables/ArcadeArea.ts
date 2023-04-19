@@ -1,30 +1,16 @@
 import Interactable, { KnownInteractableTypes } from '../Interactable';
-import GameSelectionModal from './GamesModal';
-import SelectGameModal from './SelectGameModal';
 
 export default class ArcadeArea extends Interactable {
   private _labelText?: Phaser.GameObjects.Text;
 
-  private _defaultGameURL?: string;
+  private _game?: string;
 
   private _isInteracting = false;
 
-  private _game?: string;
-
-  public get defaultGameURL() {
-    if (!this.defaultGameURL) {
-      return 'No Game URL Found';
-    }
-    console.log('We are here 16');
-    return this._defaultGameURL;
-  }
-
   public get game() {
-    if (!this.game) {
-      console.log('Here');
+    if (!this._game) {
       return 'No Game Found';
     }
-    console.log('No');
     return this._game;
   }
 
@@ -33,15 +19,15 @@ export default class ArcadeArea extends Interactable {
     this.setTintFill();
     this.setAlpha(0.3);
 
-    this._game = this.getData('games');
+    this._game = this.getData('game');
     this._labelText = this.scene.add.text(
       this.x - this.displayWidth / 2,
       this.y - this.displayHeight / 2,
-      `Welcome to the Arcade Area`,
+      `Press Spacebar to start an Arcade`,
       { color: '#FFFFFF', backgroundColor: '#000000' },
     );
     this._labelText.setVisible(false);
-    //Might need to revise this.townController.getArcadeAreaController(this);
+    this.townController.getArcadeAreaController(this);
     this.setDepth(-1);
   }
 
@@ -53,7 +39,6 @@ export default class ArcadeArea extends Interactable {
     this._labelText.setX(location.x);
     this._labelText.setY(location.y);
     this._labelText.setVisible(true);
-    GameSelectionModal();
   }
 
   overlapExit(): void {
@@ -67,6 +52,7 @@ export default class ArcadeArea extends Interactable {
   interact(): void {
     this._labelText?.setVisible(false);
     this._isInteracting = true;
+    console.log('This works"');
   }
 
   getType(): KnownInteractableTypes {

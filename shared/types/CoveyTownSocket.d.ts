@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: Interactable[];
 }
 
-export type Interactable = ViewingArea | ConversationArea | ArcadeArea;
+export type Interactable = ViewingArea | ConversationArea | ArcadeArea | KartDashArea;
 
 export type TownSettingsUpdate = {
   friendlyName?: string;
@@ -70,13 +70,22 @@ export interface ViewingArea {
 };
 
 export interface ArcadeArea {
-  defaultGameURL?: string | undefined;
   id: string;
   game?: string;
-  isPlaying: boolean;
+  inSession: boolean;
   elapsedTimeSec: number;
   score: number;
-  name: string | undefined;
+};
+
+export interface KartDashArea {
+  id: string;
+  occupantsByID: string[];
+  viewersByID: string[];
+  gameInSession: boolean;
+  trackOne: number[][];
+  trackTwo: number[][];
+  playerOne?: string;
+  playerTwo?: string;
 };
 
 export interface ServerToClientEvents {
@@ -88,10 +97,12 @@ export interface ServerToClientEvents {
   townClosing: () => void;
   chatMessage: (message: ChatMessage) => void;
   interactableUpdate: (interactable: Interactable) => void;
+  arcadeUpdate: (arcadeArea: ArcadeArea) => void;
 }
 
 export interface ClientToServerEvents {
   chatMessage: (message: ChatMessage) => void;
   playerMovement: (movementData: PlayerLocation) => void;
   interactableUpdate: (update: Interactable) => void;
+  arcadeUpdate: (update: ArcadeArea) => void;
 }
