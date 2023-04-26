@@ -1,5 +1,4 @@
 import {
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -53,9 +52,7 @@ export default function KartDashModal(): JSX.Element {
           <ModalHeader>Kart Dash</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <div>
-              <ModalFooter>Game Goes Here</ModalFooter>
-            </div>
+            <ModalFooter>Game Goes Here</ModalFooter>
           </ModalBody>
         </ModalContent>
       </Modal>
