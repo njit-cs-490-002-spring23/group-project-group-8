@@ -15,31 +15,11 @@ import {
   PlayerLocation,
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
-<<<<<<< Updated upstream
 } from '../types/CoveyTownSocket';
 import { isConversationArea, isViewingArea } from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
 import PlayerController from './PlayerController';
 import ViewingAreaController from './ViewingAreaController';
-=======
-  ArcadeArea as ArcadeAreaModel,
-  KartDashArea as KartDashGameModel,
-  PaddlePartyArea as PaddlePartyGameModel,
-} from '../types/CoveyTownSocket';
-import {
-  isConversationArea,
-  isViewingArea,
-  isArcadeArea,
-  isKartDashArea,
-  isPaddlePartyArea,
-} from '../types/TypeUtils';
-import ConversationAreaController from './ConversationAreaController';
-import PlayerController from './PlayerController';
-import ViewingAreaController from './ViewingAreaController';
-import ArcadeAreaController from './ArcadeAreaController';
-import KartDashController from './KartDashController';
-import PaddlePartyController from './PaddlePartyController';
->>>>>>> Stashed changes
 
 const CALCULATE_NEARBY_PLAYERS_DELAY = 300;
 
@@ -90,25 +70,6 @@ export type TownEvents = {
    */
   viewingAreasChanged: (newViewingAreas: ViewingAreaController[]) => void;
   /**
-<<<<<<< Updated upstream
-=======
-   * An event that indicates that the set of viewing areas has changed. This event is emitted after updating
-   * the town controller's record of viewing areas.
-   */
-  arcadeAreasChanged: (newArcadeAreas: ArcadeAreaController[]) => void;
-  /**
-   * An event that indicates that the set of kart dash areas has changed. This event is emitted after updating
-   * the town controller's record of kart dash areas.
-   */
-  kartDashAreasChanged: (newKartDashAreas: KartDashController[]) => void;
-
-  /**
-   * An event that indicates that the set of paddle party areas has changed. This event is emitted after updating
-   * the town controller's record of paddle party areas.
-   */
-  paddlePartyAreasChanged: (newPaddlePartyAreas: PaddlePartyController[]) => void;
-  /**
->>>>>>> Stashed changes
    * An event that indicates that a new chat message has been received, which is the parameter passed to the listener
    */
   chatMessage: (message: ChatMessage) => void;
@@ -172,21 +133,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   private _conversationAreasInternal: ConversationAreaController[] = [];
 
   /**
-<<<<<<< Updated upstream
-=======
-   * The current list of kart dash areas in the twon. Adding or removing kart dash areas might
-   * replace the array with a new one; clients should take note not to retain stale references.
-   */
-  private _kartDashAreasInternal: KartDashController[] = [];
-
-  /**
-   * The current list of paddle party areas in the twon. Adding or removing paddle party areas might
-   * replace the array with a new one; clients should take note not to retain stale references.
-   */
-  private _paddlePartyAreasInternal: PaddlePartyController[] = [];
-
-  /**
->>>>>>> Stashed changes
    * The friendly name of the current town, set only once this TownController is connected to the townsService
    */
   private _friendlyNameInternal?: string;
@@ -363,23 +309,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this.emit('viewingAreasChanged', newViewingAreas);
   }
 
-<<<<<<< Updated upstream
-=======
-  public get kartDashAreas() {
-    return this._kartDashAreasInternal;
-  }
-
-  private set _kartDashAreas(newKartDashAreas: KartDashController[]) {
-    this._kartDashAreasInternal = newKartDashAreas;
-    this.emit('kartDashAreasChanged', newKartDashAreas);
-  }
-
-  private set _paddlePartyAreas(newPaddlePartyAreas: PaddlePartyController[]) {
-    this._paddlePartyAreasInternal = newPaddlePartyAreas;
-    this.emit('paddlePartyAreasChanged', newPaddlePartyAreas);
-  }
-
->>>>>>> Stashed changes
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
@@ -498,50 +427,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           eachArea => eachArea.id === interactable.id,
         );
         updatedViewingArea?.updateFrom(interactable);
-<<<<<<< Updated upstream
-=======
-      } else if (isArcadeArea(interactable)) {
-        const updatedArcadeArea = this._arcadeAreas.find(
-          eachArea => eachArea.id === interactable.id,
-        );
-        updatedArcadeArea?.updateFrom(interactable);
-      } else if (isKartDashArea(interactable)) {
-        const updatedKartDashArea = this._kartDashAreas.find(
-          eachArea => eachArea.id === interactable.id,
-        );
-        if (updatedKartDashArea) {
-          updatedKartDashArea.trackOne = interactable.trackOne;
-          updatedKartDashArea.trackTwo = interactable.trackTwo;
-          updatedKartDashArea.gameInSession = interactable.gameInSession;
-          if (interactable.playerOne) {
-            updatedKartDashArea.playerOne = this._playersByIDs([interactable.playerOne])[0];
-          }
-          if (interactable.playerTwo) {
-            updatedKartDashArea.playerTwo = this._playersByIDs([interactable.playerTwo])[0];
-          }
-          if (interactable.viewersByID) {
-            updatedKartDashArea.viewers = this._playersByIDs(interactable.viewersByID);
-          }
-        }
-      } else if (isPaddlePartyArea(interactable)) {
-        const updatedPaddlePartyArea = this._paddlePartyAreas.find(
-          eachArea => eachArea.id === interactable.id,
-        );
-        if (updatedPaddlePartyArea) {
-          updatedPaddlePartyArea.paddleOne = interactable.paddleOne;
-          updatedPaddlePartyArea.paddleTwo = interactable.paddleTwo;
-          updatedPaddlePartyArea.gameInSession = interactable.gameInSession;
-          if (interactable.playerOne) {
-            updatedPaddlePartyArea.playerOne = this._playersByIDs([interactable.playerOne])[0];
-          }
-          if (interactable.playerTwo) {
-            updatedPaddlePartyArea.playerTwo = this._playersByIDs([interactable.playerTwo])[0];
-          }
-          if (interactable.viewersByID) {
-            updatedPaddlePartyArea.viewers = this._playersByIDs(interactable.viewersByID);
-          }
-        }
->>>>>>> Stashed changes
       }
     });
   }

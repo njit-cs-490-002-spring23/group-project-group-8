@@ -17,11 +17,7 @@ export type TownJoinResponse = {
   interactables: Interactable[];
 }
 
-<<<<<<< Updated upstream
 export type Interactable = ViewingArea | ConversationArea;
-=======
-export type Interactable = ViewingArea | ConversationArea | ArcadeArea | KartDashArea | PaddlePartyArea;
->>>>>>> Stashed changes
 
 export type TownSettingsUpdate = {
   friendlyName?: string;
@@ -88,20 +84,4 @@ export interface ClientToServerEvents {
   chatMessage: (message: ChatMessage) => void;
   playerMovement: (movementData: PlayerLocation) => void;
   interactableUpdate: (update: Interactable) => void;
-<<<<<<< Updated upstream
 }
-=======
-  arcadeUpdate: (update: ArcadeArea) => void;
-}
-
-export interface PaddlePartyArea {
-  id: string;
-  occupantsByID: string[];
-  viewersByID: string[];
-  gameInSession: boolean;
-  paddleOne: number[][];
-  paddleTwo: number[][];
-  playerOne?: string;
-  playerTwo?: string;
-};
->>>>>>> Stashed changes
