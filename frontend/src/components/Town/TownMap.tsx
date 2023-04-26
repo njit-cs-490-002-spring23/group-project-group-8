@@ -5,7 +5,12 @@ import useTownController from '../../hooks/useTownController';
 import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
 import TownGameScene from './TownGameScene';
+<<<<<<< Updated upstream
 
+=======
+import KartDashModal from './interactables/KartDashModal';
+import PaddlePartyModal from './interactables/PaddlePartyModal';
+>>>>>>> Stashed changes
 export default function TownMap(): JSX.Element {
   const coveyTownController = useTownController();
 
@@ -47,11 +52,17 @@ export default function TownMap(): JSX.Element {
 
   return (
     <div id='app-container'>
+<<<<<<< Updated upstream
+=======
+      <KartDashModal />
+      <PaddlePartyModal />
+>>>>>>> Stashed changes
       <NewConversationModal />
       <div id='map-container' />
       <div id='social-container'>
         <SocialSidebar />
       </div>
+      <PaddlePartyModal />
     </div>
   );
 }
