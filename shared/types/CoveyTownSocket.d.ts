@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: Interactable[];
 }
 
-export type Interactable = ViewingArea | ConversationArea | ArcadeArea | KartDashArea;
+export type Interactable = ViewingArea | ConversationArea | ArcadeArea | KartDashArea | PaddlePartyArea;
 
 export type TownSettingsUpdate = {
   friendlyName?: string;
@@ -84,6 +84,17 @@ export interface KartDashArea {
   gameInSession: boolean;
   trackOne: number[][];
   trackTwo: number[][];
+  playerOne?: string;
+  playerTwo?: string;
+};
+
+export interface PaddlePartyArea {
+  id: string;
+  occupantsByID: string[];
+  viewersByID: string[];
+  gameInSession: boolean;
+  paddleOne: number[][];
+  paddleTwo: number[][];
   playerOne?: string;
   playerTwo?: string;
 };

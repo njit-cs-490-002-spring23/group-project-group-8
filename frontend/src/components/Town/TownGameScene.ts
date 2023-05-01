@@ -9,6 +9,7 @@ import Transporter from './interactables/Transporter';
 import ViewingArea from './interactables/ViewingArea';
 import ArcadeArea from './interactables/ArcadeArea';
 import KartDashArea from './interactables/KartDashArea';
+import PaddlePartyArea from './interactables/PaddlePartyArea';
 
 // Still not sure what the right type is here... "Interactable" doesn't do it
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +24,8 @@ function interactableTypeForObjectType(type: string): any {
     return ArcadeArea;
   } else if (type == 'KartDashArea') {
     return KartDashArea;
+  } else if (type == 'PaddlePartyArea') {
+    return PaddlePartyArea;
   } else {
     throw new Error(`Unknown object type: ${type}`);
   }

@@ -7,6 +7,7 @@ export type KnownInteractableTypes =
   | 'viewingArea'
   | 'arcadeArea'
   | 'kartDashArea'
+  | 'paddlePartyArea'
   | 'transporter';
 
 /**

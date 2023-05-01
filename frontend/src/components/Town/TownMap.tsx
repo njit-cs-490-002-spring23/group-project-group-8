@@ -6,7 +6,7 @@ import SocialSidebar from '../SocialSidebar/SocialSidebar';
 import NewConversationModal from './interactables/NewCoversationModal';
 import TownGameScene from './TownGameScene';
 import KartDashModal from './interactables/KartDashModal';
-
+import PaddlePartyModal from './interactables/PaddlePartyModal';
 export default function TownMap(): JSX.Element {
   const coveyTownController = useTownController();
 
@@ -49,6 +49,7 @@ export default function TownMap(): JSX.Element {
   return (
     <div id='app-container'>
       <KartDashModal />
+      <PaddlePartyModal />
       <NewConversationModal />
       <div id='map-container' />
       <div id='social-container'>

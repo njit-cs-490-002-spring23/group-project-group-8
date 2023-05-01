@@ -1529,22 +1529,22 @@
           "y": 1058.66666666667
         },
         {
-          "type": "ViewingArea",
+          "type": "PaddlePartyArea",
           "height": 123.333333333333,
           "id": 33,
-          "name": "Fish tank",
+          "name": "Paddle Party",
           "properties": [
             {
-              "name": "video",
+              "name": "game",
               "type": "string",
-              "value": "https://www.youtube.com/watch?v=l40Ef1dg-6s"
+              "value": "Games"
             }
           ],
           "rotation": 0,
           "visible": true,
-          "width": 141.666666666667,
-          "x": 3248.33333333333,
-          "y": 868.333333333333
+          "width": 90,
+          "x": 3395,
+          "y": 835
         },
         {
           "type": "ViewingArea",

@@ -18,18 +18,21 @@ import {
   ViewingArea as ViewingAreaModel,
   ArcadeArea as ArcadeAreaModel,
   KartDashArea as KartDashGameModel,
+  PaddlePartyArea as PaddlePartyGameModel,
 } from '../types/CoveyTownSocket';
 import {
   isConversationArea,
   isViewingArea,
   isArcadeArea,
   isKartDashArea,
+  isPaddlePartyArea,
 } from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
 import PlayerController from './PlayerController';
 import ViewingAreaController from './ViewingAreaController';
 import ArcadeAreaController from './ArcadeAreaController';
 import KartDashController from './KartDashController';
+import PaddlePartyController from './PaddlePartyController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY = 300;
 
@@ -89,6 +92,12 @@ export type TownEvents = {
    * the town controller's record of kart dash areas.
    */
   kartDashAreasChanged: (newKartDashAreas: KartDashController[]) => void;
+
+  /**
+   * An event that indicates that the set of paddle party areas has changed. This event is emitted after updating
+   * the town controller's record of paddle party areas.
+   */
+  paddlePartyAreasChanged: (newPaddlePartyAreas: PaddlePartyController[]) => void;
   /**
    * An event that indicates that a new chat message has been received, which is the parameter passed to the listener
    */
@@ -157,6 +166,12 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
    * replace the array with a new one; clients should take note not to retain stale references.
    */
   private _kartDashAreasInternal: KartDashController[] = [];
+
+  /**
+   * The current list of paddle party areas in the twon. Adding or removing paddle party areas might
+   * replace the array with a new one; clients should take note not to retain stale references.
+   */
+  private _paddlePartyAreasInternal: PaddlePartyController[] = [];
 
   /**
    * The friendly name of the current town, set only once this TownController is connected to the townsService
@@ -356,6 +371,11 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this.emit('kartDashAreasChanged', newKartDashAreas);
   }
 
+  private set _paddlePartyAreas(newPaddlePartyAreas: PaddlePartyController[]) {
+    this._paddlePartyAreasInternal = newPaddlePartyAreas;
+    this.emit('paddlePartyAreasChanged', newPaddlePartyAreas);
+  }
+
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
@@ -495,6 +515,24 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           }
           if (interactable.viewersByID) {
             updatedKartDashArea.viewers = this._playersByIDs(interactable.viewersByID);
+          }
+        }
+      } else if (isPaddlePartyArea(interactable)) {
+        const updatedPaddlePartyArea = this._paddlePartyAreas.find(
+          eachArea => eachArea.id === interactable.id,
+        );
+        if (updatedPaddlePartyArea) {
+          updatedPaddlePartyArea.paddleOne = interactable.paddleOne;
+          updatedPaddlePartyArea.paddleTwo = interactable.paddleTwo;
+          updatedPaddlePartyArea.gameInSession = interactable.gameInSession;
+          if (interactable.playerOne) {
+            updatedPaddlePartyArea.playerOne = this._playersByIDs([interactable.playerOne])[0];
+          }
+          if (interactable.playerTwo) {
+            updatedPaddlePartyArea.playerTwo = this._playersByIDs([interactable.playerTwo])[0];
+          }
+          if (interactable.viewersByID) {
+            updatedPaddlePartyArea.viewers = this._playersByIDs(interactable.viewersByID);
           }
         }
       }

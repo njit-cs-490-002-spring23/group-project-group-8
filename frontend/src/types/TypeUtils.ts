@@ -4,6 +4,7 @@ import {
   ViewingArea,
   ArcadeArea,
   KartDashArea,
+  PaddlePartyArea,
 } from './CoveyTownSocket';
 
 /**
@@ -32,4 +33,11 @@ export function isArcadeArea(interactable: Interactable): interactable is Arcade
  */
 export function isKartDashArea(interactable: Interactable): interactable is KartDashArea {
   return 'trackOne' in interactable;
+}
+
+/**
+ * Test to see if an interactable is a kart dash area
+ */
+export function isPaddlePartyArea(interactable: Interactable): interactable is PaddlePartyArea {
+  return 'paddleOne' in interactable;
 }
