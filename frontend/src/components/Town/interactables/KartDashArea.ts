@@ -1,10 +1,16 @@
 import KartDashController from '../../../classes/KartDashController';
-import TownController from '../../../classes/TownController';
+import PlayerController from '../../../classes/PlayerController';
+import TownController, { usePlayers } from '../../../classes/TownController';
 import { BoundingBox } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 import TownGameScene from '../TownGameScene';
+import PlayersInGameList from './testgame/testGamePlayerList';
 
 export default class KartDashArea extends Interactable {
+  private _labelText?: Phaser.GameObjects.Text;
+
+  private _isInteracting = false;
+
   private _playerOneName?: Phaser.GameObjects.Text;
 
   private _playerTwoName?: Phaser.GameObjects.Text;
@@ -15,9 +21,11 @@ export default class KartDashArea extends Interactable {
 
   private _kartDashArea?: KartDashController;
 
-  private _townController?: TownController;
-
   private _gameInSession?: Phaser.GameObjects.Text;
+
+  private _townController: TownController;
+
+  private _playersInGameNames!: PlayerController;
 
   constructor(scene: TownGameScene) {
     super(scene);
@@ -25,6 +33,14 @@ export default class KartDashArea extends Interactable {
     this.setTintFill();
     this.setAlpha(0.3);
     this._townController.addListener('kartDashAreasChanged', this._updateKartDashAreas);
+  }
+
+  private get _playersInGame() {
+    const playersInGameNames = this._playersInGameNames;
+    if (!playersInGameNames) {
+      throw new Error('If empty player array push to player 1 and 2');
+    }
+    return playersInGameNames;
   }
 
   private get _playerOneNameText() {
@@ -40,13 +56,14 @@ export default class KartDashArea extends Interactable {
     if (!ret) {
       throw new Error('Expected player two to be defined');
     }
+
     return ret;
   }
 
   private get _trackOneValueText() {
     const ret = this._trackOneValue;
     if (!ret) {
-      throw new Error('Expected board 1 to be defined');
+      throw new Error('Expected track one to be defined');
     }
     return ret;
   }
@@ -61,6 +78,20 @@ export default class KartDashArea extends Interactable {
 
   getType(): KnownInteractableTypes {
     return 'kartDashArea';
+  }
+
+  overlapExit(): void {
+    this._labelText?.setVisible(false);
+    if (this._isInteracting) {
+      this.townController.interactableEmitter.emit('endInteraction', this);
+      this._isInteracting = false;
+    }
+  }
+
+  interact(): void {
+    this._labelText?.setVisible(false);
+    this._isInteracting = true;
+    console.log(PlayerController.arguments);
   }
 
   removedFromScene(): void {}
@@ -90,6 +121,7 @@ export default class KartDashArea extends Interactable {
       this._playerTwoNameText.setText(area.playerTwo?.userName ?? '(No Player Two)');
       this._trackOneValueText.setText(area.trackOne?.toString() ?? '(No Track One)');
       this._trackTwoValueText.setText(area.trackTwo?.toString() ?? '(No Track Two)');
+      console.log(this._playersInGame);
     }
   };
 

@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import TestGame from './testgame/testGame';
+import PlayersInGameList from './testgame/testGamePlayerList';
 
 export default function KartDashModal(): JSX.Element {
   const newKartDashGame = useInteractable('kartDashArea');
@@ -57,7 +58,9 @@ export default function KartDashModal(): JSX.Element {
             <Container maxW='7xl' h='650px'>
               <TestGame />
             </Container>
-            <ModalFooter>Game Goes Here</ModalFooter>
+            <ModalFooter>
+              <PlayersInGameList />
+            </ModalFooter>
           </ModalBody>
         </ModalContent>
       </Modal>
