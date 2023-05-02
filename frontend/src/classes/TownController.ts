@@ -356,6 +356,18 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this.emit('kartDashAreasChanged', newKartDashAreas);
   }
 
+<<<<<<< Updated upstream
+=======
+  public get paddlePartyAreas() {
+    return this._paddlePartyAreasInternal;
+  }
+
+  private set _paddlePartyAreas(newPaddlePartyAreas: PaddlePartyController[]) {
+    this._paddlePartyAreasInternal = newPaddlePartyAreas;
+    this.emit('paddlePartyAreasChanged', newPaddlePartyAreas);
+  }
+
+>>>>>>> Stashed changes
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
