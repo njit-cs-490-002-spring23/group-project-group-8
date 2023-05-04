@@ -1,10 +1,9 @@
 import KartDashController from '../../../classes/KartDashController';
 import PlayerController from '../../../classes/PlayerController';
-import TownController, { usePlayers } from '../../../classes/TownController';
+import TownController from '../../../classes/TownController';
 import { BoundingBox } from '../../../types/CoveyTownSocket';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 import TownGameScene from '../TownGameScene';
-import PlayersInGameList from './testgame/testGamePlayerList';
 
 export default class KartDashArea extends Interactable {
   private _labelText?: Phaser.GameObjects.Text;
@@ -91,7 +90,6 @@ export default class KartDashArea extends Interactable {
   interact(): void {
     this._labelText?.setVisible(false);
     this._isInteracting = true;
-    console.log(PlayerController.arguments);
   }
 
   removedFromScene(): void {}

@@ -1,3 +1,4 @@
+import { useArcadeAreaController } from '../../../classes/TownController';
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
 export default class ArcadeArea extends Interactable {
@@ -52,7 +53,6 @@ export default class ArcadeArea extends Interactable {
   interact(): void {
     this._labelText?.setVisible(false);
     this._isInteracting = true;
-    console.log('This works"');
   }
 
   getType(): KnownInteractableTypes {

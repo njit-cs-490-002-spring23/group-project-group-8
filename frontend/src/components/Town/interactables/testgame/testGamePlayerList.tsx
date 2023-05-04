@@ -21,9 +21,7 @@ export default function PlayersInGameList(): JSX.Element {
   return (
     <Box>
       <Tooltip label={`Town ID: ${townID}`}>
-        <Heading as='h2' fontSize='l'>
-          Current town: {friendlyName}
-        </Heading>
+        <Heading>Current town: {friendlyName}</Heading>
       </Tooltip>
       <OrderedList>
         {sorted.map(player => (
