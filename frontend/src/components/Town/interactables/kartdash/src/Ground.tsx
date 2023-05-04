@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { usePlane } from '@react-three/cannon';
 import { MeshReflectorMaterial } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
@@ -6,6 +7,7 @@ import { BufferAttribute } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 
 export function Ground(): JSX.Element {
+  const ref = usePlane(() => ({ type: 'Static', rotation: [-Math.PI / 2, 0, 0] }));
   const gridMap = useLoader(TextureLoader, process.env.PUBLIC_URL + '/textures/grid.png');
 
   const aoMap = useLoader(TextureLoader, process.env.PUBLIC_URL + '/textures/ground-ao.png');
