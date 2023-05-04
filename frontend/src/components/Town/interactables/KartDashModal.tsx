@@ -9,10 +9,11 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react';
+import { Canvas } from '@react-three/fiber';
 import React, { useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
-import TestGame from './testgame/testGame';
+import { Scene } from './kartdash/src/Scene';
 
 export default function KartDashModal(): JSX.Element {
   const newKartDashGame = useInteractable('kartDashArea');
@@ -55,9 +56,11 @@ export default function KartDashModal(): JSX.Element {
           <ModalCloseButton />
           <ModalBody>
             <Container maxW='7xl' h='650px'>
-              <TestGame />
+              <Canvas>
+                <Scene />
+              </Canvas>
             </Container>
-            <ModalFooter>Game Goes Here</ModalFooter>
+            <ModalFooter></ModalFooter>
           </ModalBody>
         </ModalContent>
       </Modal>

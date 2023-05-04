@@ -1,5 +1,5 @@
 import {
-  Button,
+  Container,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -8,12 +8,12 @@ import {
   ModalHeader,
   ModalOverlay,
   useToast,
-  Container,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
 import TestGame from './testgame/testGame';
+import PlayersInGameList from './testgame/testGamePlayerList';
 
 export default function PaddlePartyModal(): JSX.Element {
   const newPaddlePartyGame = useInteractable('paddlePartyArea');
@@ -58,7 +58,9 @@ export default function PaddlePartyModal(): JSX.Element {
             <Container maxW='7xl' h='700px'>
               <TestGame />
             </Container>
-            <ModalFooter>Game Goes Here</ModalFooter>
+            <ModalFooter>
+              <PlayersInGameList />
+            </ModalFooter>
           </ModalBody>
         </ModalContent>
       </Modal>
