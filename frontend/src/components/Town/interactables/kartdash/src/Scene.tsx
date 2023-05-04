@@ -1,3 +1,4 @@
+import { Physics } from '@react-three/cannon';
 import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import React, { Suspense } from 'react';
 import { Car } from './Car';
@@ -11,7 +12,9 @@ export function Scene() {
       <PerspectiveCamera makeDefault position={[-6, 3.9, 6.21]} fov={40} />
       <OrbitControls target={[-2.64, -0.71, 0.03]} />
       <Track />
-      <Ground />
+      <Physics>
+        <Ground />
+      </Physics>
       <Car />
     </Suspense>
   );
