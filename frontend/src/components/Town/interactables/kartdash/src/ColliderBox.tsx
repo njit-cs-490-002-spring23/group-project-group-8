@@ -2,7 +2,13 @@ import { Triplet, useBox } from '@react-three/cannon';
 import React from 'react';
 
 const DEBUG = true;
-export function ColliderBox({ position, scale }: { position: Triplet; scale: Triplet }) {
+export function ColliderBox({
+  position,
+  scale,
+}: {
+  position: Triplet;
+  scale: Triplet;
+}): JSX.Element {
   useBox(() => ({ args: scale, position, type: 'Static' }));
   return (
     DEBUG && (
@@ -15,4 +21,6 @@ export function ColliderBox({ position, scale }: { position: Triplet; scale: Tri
       </mesh>
     )
   );
+
+  return <></>;
 }
