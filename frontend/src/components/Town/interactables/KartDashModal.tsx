@@ -13,6 +13,7 @@ import { Canvas } from '@react-three/fiber';
 import React, { useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
+import PlayersInGameList from './gameStats/gamePlayerList';
 import { Scene } from './kartdash/src/Scene';
 
 export default function KartDashModal(): JSX.Element {
@@ -60,7 +61,9 @@ export default function KartDashModal(): JSX.Element {
                 <Scene />
               </Canvas>
             </Container>
-            <ModalFooter></ModalFooter>
+            <ModalFooter>
+              <PlayersInGameList />
+            </ModalFooter>
           </ModalBody>
         </ModalContent>
       </Modal>

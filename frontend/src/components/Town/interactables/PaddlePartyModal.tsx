@@ -12,8 +12,8 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useInteractable } from '../../../classes/TownController';
 import useTownController from '../../../hooks/useTownController';
-import TestGame from './testgame/testGame';
-import PlayersInGameList from './testgame/testGamePlayerList';
+import PlayersInGameList from './gameStats/gamePlayerList';
+import PaddleGame from './paddleparty/paddleGame';
 
 export default function PaddlePartyModal(): JSX.Element {
   const newPaddlePartyGame = useInteractable('paddlePartyArea');
@@ -56,7 +56,7 @@ export default function PaddlePartyModal(): JSX.Element {
           <ModalCloseButton />
           <ModalBody>
             <Container maxW='7xl' h='700px'>
-              <TestGame />
+              <PaddleGame />
             </Container>
             <ModalFooter>
               <PlayersInGameList />
