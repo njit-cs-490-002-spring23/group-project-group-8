@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 type Controls = {
   [key: string]: boolean;
-  w: boolean;
-  a: boolean;
-  s: boolean;
-  d: boolean;
+  i: boolean;
+  j: boolean;
+  k: boolean;
+  l: boolean;
   arrowup: boolean;
   arrowdown: boolean;
   arrowleft: boolean;
@@ -28,10 +28,10 @@ type ChassisApi = {
 
 export const useControls = (vehicleApi: VehicleApi, chassisApi: ChassisApi) => {
   const [controls, setControls] = useState<Controls>({
-    w: false,
-    a: false,
-    s: false,
-    d: false,
+    i: false,
+    j: false,
+    k: false,
+    l: false,
     arrowup: false,
     arrowdown: false,
     arrowleft: false,
@@ -59,10 +59,10 @@ export const useControls = (vehicleApi: VehicleApi, chassisApi: ChassisApi) => {
   useEffect(() => {
     if (!vehicleApi || !chassisApi) return;
 
-    if (controls.w) {
+    if (controls.i) {
       vehicleApi.applyEngineForce(150, 2);
       vehicleApi.applyEngineForce(150, 3);
-    } else if (controls.s) {
+    } else if (controls.k) {
       vehicleApi.applyEngineForce(-150, 2);
       vehicleApi.applyEngineForce(-150, 3);
     } else {
@@ -70,12 +70,12 @@ export const useControls = (vehicleApi: VehicleApi, chassisApi: ChassisApi) => {
       vehicleApi.applyEngineForce(0, 3);
     }
 
-    if (controls.a) {
+    if (controls.j) {
       vehicleApi.setSteeringValue(0.35, 2);
       vehicleApi.setSteeringValue(0.35, 3);
       vehicleApi.setSteeringValue(-0.1, 0);
       vehicleApi.setSteeringValue(-0.1, 1);
-    } else if (controls.d) {
+    } else if (controls.l) {
       vehicleApi.setSteeringValue(-0.35, 2);
       vehicleApi.setSteeringValue(-0.35, 3);
       vehicleApi.setSteeringValue(0.1, 0);
