@@ -7,7 +7,8 @@ import { BufferAttribute } from 'three';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 
 export function Ground(): JSX.Element {
-  const ref = usePlane(() => ({ type: 'Static', rotation: [-Math.PI / 2, 0, 0] }));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ref] = usePlane(() => ({ type: 'Static', rotation: [-Math.PI / 2, 0, 0] }));
   const gridMap = useLoader(TextureLoader, process.env.PUBLIC_URL + '/textures/grid.png');
 
   const aoMap = useLoader(TextureLoader, process.env.PUBLIC_URL + '/textures/ground-ao.png');

@@ -8,14 +8,14 @@ import { Track } from './Track';
 export function Scene() {
   return (
     <Suspense fallback={null}>
+      <Environment files={process.env.PUBLIC_URL + '/textures/envmap.hdr'} background={true} />
+      <PerspectiveCamera makeDefault position={[-6, 3.9, 6.21]} fov={40} />
+      <OrbitControls target={[-2.64, -0.71, 0.03]} />
+      <Track />
       <Physics>
-        <Environment files={process.env.PUBLIC_URL + '/textures/envmap.hdr'} background={true} />
-        <PerspectiveCamera makeDefault position={[-6, 3.9, 6.21]} fov={40} />
-        <OrbitControls target={[-2.64, -0.71, 0.03]} />
-        <Track />
         <Ground />
-        <Car />
       </Physics>
+      <Car />
     </Suspense>
   );
 }
