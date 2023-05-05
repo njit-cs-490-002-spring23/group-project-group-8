@@ -6,6 +6,7 @@ import { io } from 'socket.io-client';
 import TypedEmitter from 'typed-emitter';
 import Interactable from '../components/Town/Interactable';
 import ViewingArea from '../components/Town/interactables/ViewingArea';
+import ArcadeArea from '../components/Town/interactables/ArcadeArea';
 import { LoginController } from '../contexts/LoginControllerContext';
 import { TownsService, TownsServiceClient } from '../generated/client';
 import useTownController from '../hooks/useTownController';
@@ -15,11 +16,23 @@ import {
   PlayerLocation,
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
+  ArcadeArea as ArcadeAreaModel,
+  KartDashArea as KartDashGameModel,
+  PaddlePartyArea as PaddlePartyGameModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isViewingArea } from '../types/TypeUtils';
+import {
+  isConversationArea,
+  isViewingArea,
+  isArcadeArea,
+  isKartDashArea,
+  isPaddlePartyArea,
+} from '../types/TypeUtils';
 import ConversationAreaController from './ConversationAreaController';
 import PlayerController from './PlayerController';
 import ViewingAreaController from './ViewingAreaController';
+import ArcadeAreaController from './ArcadeAreaController';
+import KartDashController from './KartDashController';
+import PaddlePartyController from './PaddlePartyController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY = 300;
 
@@ -69,6 +82,22 @@ export type TownEvents = {
    * the town controller's record of viewing areas.
    */
   viewingAreasChanged: (newViewingAreas: ViewingAreaController[]) => void;
+  /**
+   * An event that indicates that the set of viewing areas has changed. This event is emitted after updating
+   * the town controller's record of viewing areas.
+   */
+  arcadeAreasChanged: (newArcadeAreas: ArcadeAreaController[]) => void;
+  /**
+   * An event that indicates that the set of kart dash areas has changed. This event is emitted after updating
+   * the town controller's record of kart dash areas.
+   */
+  kartDashAreasChanged: (newKartDashAreas: KartDashController[]) => void;
+
+  /**
+   * An event that indicates that the set of paddle party areas has changed. This event is emitted after updating
+   * the town controller's record of paddle party areas.
+   */
+  paddlePartyAreasChanged: (newPaddlePartyAreas: PaddlePartyController[]) => void;
   /**
    * An event that indicates that a new chat message has been received, which is the parameter passed to the listener
    */
@@ -133,6 +162,18 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   private _conversationAreasInternal: ConversationAreaController[] = [];
 
   /**
+   * The current list of kart dash areas in the twon. Adding or removing kart dash areas might
+   * replace the array with a new one; clients should take note not to retain stale references.
+   */
+  private _kartDashAreasInternal: KartDashController[] = [];
+
+  /**
+   * The current list of paddle party areas in the twon. Adding or removing paddle party areas might
+   * replace the array with a new one; clients should take note not to retain stale references.
+   */
+  private _paddlePartyAreasInternal: PaddlePartyController[] = [];
+
+  /**
    * The friendly name of the current town, set only once this TownController is connected to the townsService
    */
   private _friendlyNameInternal?: string;
@@ -185,10 +226,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
 
   /**
    * An event emitter that broadcasts interactable-specific events
+   * might need: private _arcadeAreas: ArcadeAreaController[] = [];
    */
   private _interactableEmitter = new EventEmitter();
 
   private _viewingAreas: ViewingAreaController[] = [];
+
+  private _arcadeAreas: ArcadeAreaController[] = [];
 
   public constructor({ userName, townID, loginController }: ConnectionProperties) {
     super();
@@ -296,6 +340,15 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this.emit('conversationAreasChanged', newConversationAreas);
   }
 
+  public get arcadeAreas() {
+    return this._arcadeAreas;
+  }
+
+  public set arcadeAreas(newArcadeAreas: ArcadeAreaController[]) {
+    this._arcadeAreas = newArcadeAreas;
+    this.emit('arcadeAreasChanged', newArcadeAreas);
+  }
+
   public get interactableEmitter() {
     return this._interactableEmitter;
   }
@@ -307,6 +360,20 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   public set viewingAreas(newViewingAreas: ViewingAreaController[]) {
     this._viewingAreas = newViewingAreas;
     this.emit('viewingAreasChanged', newViewingAreas);
+  }
+
+  public get kartDashAreas() {
+    return this._kartDashAreasInternal;
+  }
+
+  private set _kartDashAreas(newKartDashAreas: KartDashController[]) {
+    this._kartDashAreasInternal = newKartDashAreas;
+    this.emit('kartDashAreasChanged', newKartDashAreas);
+  }
+
+  private set _paddlePartyAreas(newPaddlePartyAreas: PaddlePartyController[]) {
+    this._paddlePartyAreasInternal = newPaddlePartyAreas;
+    this.emit('paddlePartyAreasChanged', newPaddlePartyAreas);
   }
 
   /**
@@ -408,7 +475,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
      * a conversationAreasChagned event to listeners of this TownController.
      *
      * If the update changes properties of the interactable, the interactable is also expected to emit its own
-     * events (@see ViewingAreaController and @see ConversationAreaController)
+     * events (@see ViewingAreaController and @see ConversationAreaController) and @see ArcadeAreaController)
      */
     this._socket.on('interactableUpdate', interactable => {
       if (isConversationArea(interactable)) {
@@ -427,6 +494,47 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           eachArea => eachArea.id === interactable.id,
         );
         updatedViewingArea?.updateFrom(interactable);
+      } else if (isArcadeArea(interactable)) {
+        const updatedArcadeArea = this._arcadeAreas.find(
+          eachArea => eachArea.id === interactable.id,
+        );
+        updatedArcadeArea?.updateFrom(interactable);
+      } else if (isKartDashArea(interactable)) {
+        const updatedKartDashArea = this._kartDashAreas.find(
+          eachArea => eachArea.id === interactable.id,
+        );
+        if (updatedKartDashArea) {
+          updatedKartDashArea.trackOne = interactable.trackOne;
+          updatedKartDashArea.trackTwo = interactable.trackTwo;
+          updatedKartDashArea.gameInSession = interactable.gameInSession;
+          if (interactable.playerOne) {
+            updatedKartDashArea.playerOne = this._playersByIDs([interactable.playerOne])[0];
+          }
+          if (interactable.playerTwo) {
+            updatedKartDashArea.playerTwo = this._playersByIDs([interactable.playerTwo])[0];
+          }
+          if (interactable.viewersByID) {
+            updatedKartDashArea.viewers = this._playersByIDs(interactable.viewersByID);
+          }
+        }
+      } else if (isPaddlePartyArea(interactable)) {
+        const updatedPaddlePartyArea = this._paddlePartyAreas.find(
+          eachArea => eachArea.id === interactable.id,
+        );
+        if (updatedPaddlePartyArea) {
+          updatedPaddlePartyArea.paddleOne = interactable.paddleOne;
+          updatedPaddlePartyArea.paddleTwo = interactable.paddleTwo;
+          updatedPaddlePartyArea.gameInSession = interactable.gameInSession;
+          if (interactable.playerOne) {
+            updatedPaddlePartyArea.playerOne = this._playersByIDs([interactable.playerOne])[0];
+          }
+          if (interactable.playerTwo) {
+            updatedPaddlePartyArea.playerTwo = this._playersByIDs([interactable.playerTwo])[0];
+          }
+          if (interactable.viewersByID) {
+            updatedPaddlePartyArea.viewers = this._playersByIDs(interactable.viewersByID);
+          }
+        }
       }
     });
   }
@@ -509,6 +617,17 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   /**
+   * Create a new arcade area, sending the request to the townService. Throws an error if the request
+   * is not successful. Does not immediately update local state about the new viewing area - it will be
+   * updated once the townService creates the area and emits an interactableUpdate
+   *
+   * @param newArea
+   */
+  async createArcadeArea(newArea: ArcadeAreaModel) {
+    await this._townsService.createArcadeArea(this.townID, this.sessionToken, newArea);
+  }
+
+  /**
    * Disconnect from the town, notifying the townService that we are leaving and returning
    * to the login page
    */
@@ -540,6 +659,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
 
         this._conversationAreas = [];
         this._viewingAreas = [];
+        this._arcadeAreas = [];
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
             this._conversationAreasInternal.push(
@@ -550,6 +670,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             );
           } else if (isViewingArea(eachInteractable)) {
             this._viewingAreas.push(new ViewingAreaController(eachInteractable));
+          } else if (isArcadeArea(eachInteractable)) {
+            this._arcadeAreas.push(new ArcadeAreaController(eachInteractable));
           }
         });
         this._userID = initialData.userID;
@@ -574,6 +696,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
       eachExistingArea => eachExistingArea.id === viewingArea.name,
     );
     if (existingController) {
+      console.log(viewingArea.name);
       return existingController;
     } else {
       const newController = new ViewingAreaController({
@@ -594,6 +717,42 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
    */
   public emitViewingAreaUpdate(viewingArea: ViewingAreaController) {
     this._socket.emit('interactableUpdate', viewingArea.viewingAreaModel());
+  }
+
+  /**
+   * Retrieve the arcade area controller that corresponds to an arcadeAreaModel, creating one if necessary
+   *
+   * @param arcadeArea
+   * @returns
+   */
+  public getArcadeAreaController(arcadeArea: ArcadeArea): ArcadeAreaController {
+    const existingController = this._arcadeAreas.find(
+      eachExistingArea => eachExistingArea.id === arcadeArea.name,
+    );
+    if (existingController) {
+      console.log(arcadeArea.name);
+      return existingController;
+    } else {
+      const newController = new ArcadeAreaController({
+        elapsedTimeSec: 0,
+        id: arcadeArea.name,
+        inSession: false,
+        game: arcadeArea.game,
+        score: 0,
+      });
+      this._arcadeAreas.push(newController);
+      console.log(this.arcadeAreas);
+      return newController;
+    }
+  }
+
+  /**
+   * Emit a arcade area update to the townService
+   * @param arcadeArea The Arcade Area Controller that is updated and should be emitted
+   *    with the event
+   */
+  public emitArcadeAreaUpdate(arcadeArea: ArcadeAreaController) {
+    this._socket.emit('interactableUpdate', arcadeArea.arcadeAreaModel());
   }
 
   /**
@@ -673,6 +832,27 @@ export function useViewingAreaController(viewingAreaID: string): ViewingAreaCont
     throw new Error(`Requested viewing area ${viewingAreaID} does not exist`);
   }
   return viewingArea;
+}
+
+/**
+ * A react hook to retrieve an arcade area controller.
+ *
+ * This function will throw an error if the arcade area controller does not exist.
+ *
+ * This hook relies on the TownControllerContext.
+ *
+ * @param arcadeAreaID The ID of the arcade area to retrieve the controller for
+ *
+ * @throws Error if there is no arcade area controller matching the specifeid ID
+ */
+export function useArcadeAreaController(arcadeAreaID: string): ArcadeAreaController {
+  const townController = useTownController();
+
+  const arcadeArea = townController.arcadeAreas.find(eachArea => eachArea.id == arcadeAreaID);
+  if (!arcadeArea) {
+    throw new Error(`Requested viewing area ${arcadeAreaID} does not exist`);
+  }
+  return arcadeArea;
 }
 
 /**

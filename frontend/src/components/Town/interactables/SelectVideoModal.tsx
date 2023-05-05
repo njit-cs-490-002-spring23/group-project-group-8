@@ -38,7 +38,7 @@ export default function SelectVideoModal({
     } else {
       coveyTownController.unPause();
     }
-  }, [coveyTownController, isOpen]);
+  }, [coveyTownController, isOpen, viewingArea]);
 
   const closeModal = useCallback(() => {
     coveyTownController.unPause();

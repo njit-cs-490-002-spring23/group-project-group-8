@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "paths": {
+    "react": [ "./node_modules/@types/react" ]
+    },
     "lib": [
       "dom",
       "dom.iterable",
