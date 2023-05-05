@@ -1,8 +1,11 @@
-import { useBox } from '@react-three/cannon';
+import { useBox, useRaycastVehicle } from '@react-three/cannon';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import { Object3D } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { useControls } from './useControls';
+import { useWheels } from './useWheels';
+import { WheelHandler } from './WheelHandler';
 
 export function Car(): JSX.Element {
   const mesh = useLoader(GLTFLoader, process.env.PUBLIC_URL + './models/car.glb').scene as Object3D;
@@ -15,17 +18,17 @@ export function Car(): JSX.Element {
   /**
    * Dimensions of the player's car.
    */
-  const carWidth = 0.1;
-  const carHeight = 0.05;
-  const carFront = 0.1;
-  const carPosition = [-1.5, 0.5, 3];
-  const carWheelRadius = 0.03;
+  const width = 0.1;
+  const height = 0.05;
+  const front = 0.1;
+  const position = [-1.5, 0.5, 3];
+  const wheelRadius = 0.03;
 
   /**
    * Initializer for the car as a physics object using useBox hook from cannon.
    */
-  const carChassisArguments: [number, number, number] = [carWidth, carHeight, carFront * 2];
-  const [carChassis, carChassisHook] = useBox(
+  const carChassisArguments: [number, number, number] = [width, height, front * 2];
+  const [chassisBody, chassisApi] = useBox(
     () => ({
       args: carChassisArguments,
       mass: 150,
@@ -34,15 +37,34 @@ export function Car(): JSX.Element {
     useRef(null),
   );
 
+  const [wheels, wheelInfos] = useWheels(width, height, front, wheelRadius);
+
+  const [vehicle, vehicleApi] = useRaycastVehicle(
+    () => ({
+      chassisBody,
+      wheelInfos,
+      wheels,
+    }),
+    useRef(null),
+  );
+
+  useControls(vehicleApi, chassisApi);
+
   useEffect(() => {
     mesh.scale.set(0.001, 0.0012, 0.0012);
     (mesh.children[0] as Object3D).position.set(-365, -18, -67);
   }, [mesh]);
 
   return (
-    <mesh ref={carChassis}>
-      <meshBasicMaterial transparent={true} opacity={0.3} />
-      <boxGeometry args={carChassisArguments} />
-    </mesh>
+    <group ref={vehicle} name='vehicle'>
+      <mesh ref={chassisBody}>
+        <meshBasicMaterial transparent={true} opacity={0.3} />
+        <boxGeometry args={carChassisArguments} />
+      </mesh>
+      <WheelHandler wheelRef={wheels[0]} radius={wheelRadius} active={false} />
+      <WheelHandler wheelRef={wheels[1]} radius={wheelRadius} active={false} />
+      <WheelHandler wheelRef={wheels[2]} radius={wheelRadius} active={false} />
+      <WheelHandler wheelRef={wheels[3]} radius={wheelRadius} active={false} />
+    </group>
   );
 }
