@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useCompoundBody } from '@react-three/cannon';
+import { useCompoundBody, WheelInfoOptions } from '@react-three/cannon';
 import { useRef } from 'react';
 
-interface WheelInfo {
+type WheelInfo = WheelInfoOptions & {
   radius: number;
-  directionLocal: number[];
-  axleLocal: number[];
+  directionLocal: [x: number, y: number, z: number];
+  axleLocal: [x: number, y: number, z: number];
   suspensionStiffness: number;
   suspensionRestLength: number;
   frictionSlip: number;
@@ -17,9 +15,9 @@ interface WheelInfo {
   maxSuspensionTravel: number;
   customSlidingRotationalSpeed: number;
   useCustomSlidingRotationalSpeed: boolean;
-  chassisConnectionPointLocal?: any;
+  chassisConnectionPointLocal: [x: number, y: number, z: number];
   isFrontWheel: boolean;
-}
+};
 
 export const useWheels = (
   width: number,
@@ -27,10 +25,9 @@ export const useWheels = (
   front: number,
   radius: number,
 ): [React.MutableRefObject<any>[], WheelInfo[]] => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  const wheels = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
 
-  const wheelInfo = {
+  const wheelInfo: WheelInfo = {
     radius,
     directionLocal: [0, -1, 0],
     axleLocal: [1, 0, 0],
@@ -44,50 +41,50 @@ export const useWheels = (
     maxSuspensionTravel: 0.1,
     customSlidingRotationalSpeed: -30,
     useCustomSlidingRotationalSpeed: true,
-    isFrontWheel: true,
+    chassisConnectionPointLocal: [0, 0, 0],
+    isFrontWheel: false,
   };
 
-  const wheelInfos = [
+  const wheelInfos: WheelInfo[] = [
     {
       ...wheelInfo,
-      chassisConnectionPointPortal: [-width * 0.65, height * 0.4, front],
+      chassisConnectionPointLocal: [-width * 0.65, height * 0.4, front],
       isFrontWheel: true,
     },
     {
       ...wheelInfo,
-      chassisConnectionPointPortal: [width * 0.65, height * 0.4, front],
+      chassisConnectionPointLocal: [width * 0.65, height * 0.4, front],
       isFrontWheel: true,
     },
     {
       ...wheelInfo,
-      chassisConnectionPointPortal: [-width * 0.65, height * 0.4, -front],
-      isFrontWheel: true,
+      chassisConnectionPointLocal: [-width * 0.65, height * 0.4, -front],
+      isFrontWheel: false,
     },
     {
       ...wheelInfo,
-      chassisConnectionPointPortal: [width * 0.65, height * 0.4, -front],
+      chassisConnectionPointLocal: [width * 0.65, height * 0.4, -front],
       isFrontWheel: false,
     },
   ];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const eachWheelPhysics = (): any => ({
+  const propsFunc = () => ({
     collisionFilterGroup: 0,
     mass: 1,
     shapes: [
       {
         args: [wheelInfo.radius, wheelInfo.radius, 0.015, 16],
         rotation: [0, 0, -Math.PI / 2],
-        type: 'Cylinder',
+        type: 'Cylinder' as const,
       },
     ],
-    type: 'Kinematic',
+    type: 'Kinematic' as const,
   });
 
-  useCompoundBody(eachWheelPhysics, wheels[0]);
-  useCompoundBody(eachWheelPhysics, wheels[1]);
-  useCompoundBody(eachWheelPhysics, wheels[2]);
-  useCompoundBody(eachWheelPhysics, wheels[3]);
+  useCompoundBody(propsFunc, wheels[0]);
+  useCompoundBody(propsFunc, wheels[1]);
+  useCompoundBody(propsFunc, wheels[2]);
+  useCompoundBody(propsFunc, wheels[3]);
 
   return [wheels, wheelInfos];
 };

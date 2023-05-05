@@ -21,18 +21,18 @@ export function Car(): JSX.Element {
   const width = 0.1;
   const height = 0.05;
   const front = 0.1;
-  const position = [-1.5, 0.5, 3];
+  const position: [number, number, number] = [-1.5, 0.5, 3];
   const wheelRadius = 0.03;
 
   /**
    * Initializer for the car as a physics object using useBox hook from cannon.
    */
-  const carChassisArguments: [number, number, number] = [width, height, front * 2];
+  const chassisBodyArgs: [number, number, number] = [width, height, front * 2];
   const [chassisBody, chassisApi] = useBox(
     () => ({
-      args: carChassisArguments,
+      args: chassisBodyArgs,
       mass: 150,
-      position: [0, 0, 0],
+      position,
     }),
     useRef(null),
   );
@@ -57,9 +57,10 @@ export function Car(): JSX.Element {
 
   return (
     <group ref={vehicle} name='vehicle'>
+      {/* <primitive object={result} rotation-y={Math.PI} position={[0, -0.09, 0]}/> */}
       <mesh ref={chassisBody}>
         <meshBasicMaterial transparent={true} opacity={0.3} />
-        <boxGeometry args={carChassisArguments} />
+        <boxGeometry args={chassisBodyArgs} />
       </mesh>
       <WheelHandler wheelRef={wheels[0]} radius={wheelRadius} />
       <WheelHandler wheelRef={wheels[1]} radius={wheelRadius} />
