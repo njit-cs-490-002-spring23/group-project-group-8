@@ -1,4 +1,4 @@
-import { Box, Heading, ListItem, OrderedList, Tooltip } from '@chakra-ui/react';
+import { Box, ListItem, OrderedList } from '@chakra-ui/react';
 import React from 'react';
 import { usePlayers } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
@@ -20,12 +20,9 @@ export default function PlayersInGameList(): JSX.Element {
 
   return (
     <Box>
-      <Tooltip label={`Town ID: ${townID}`}>
-        <Heading>Current town: {friendlyName}</Heading>
-      </Tooltip>
       <OrderedList>
         {sorted.map(player => (
-          <ListItem key={player.id}>
+          <ListItem key={player.id} fontSize={'50px'}>
             <PlayerName player={player} />
           </ListItem>
         ))}
