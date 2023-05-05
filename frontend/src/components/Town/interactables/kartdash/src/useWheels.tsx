@@ -1,20 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCompoundBody } from '@react-three/cannon';
 import { useRef } from 'react';
 
-interface WheelInfoOptions {
+interface WheelInfo {
   radius: number;
-  axleLocal: [number, number, number];
-  directionLocal: [number, number, number];
+  directionLocal: number[];
+  axleLocal: number[];
   suspensionStiffness: number;
-  frictionSlip: number;
   suspensionRestLength: number;
+  frictionSlip: number;
+  dampingRelaxation: number;
+  dampingCompression: number;
+  maxSuspensionForce: number;
   rollInfluence: number;
-  useCustomSlidingRotationalSpeed: boolean;
+  maxSuspensionTravel: number;
   customSlidingRotationalSpeed: number;
-  naxSuspensionForce: number;
-  naxSuspensionTravel: number;
-  directionalLocal: [number, number, number];
-  chassisConnectionPointPortal: [number, number, number];
+  useCustomSlidingRotationalSpeed: boolean;
+  chassisConnectionPointLocal?: any;
   isFrontWheel: boolean;
 }
 
@@ -23,24 +26,25 @@ export const useWheels = (
   height: number,
   front: number,
   radius: number,
-): [React.MutableRefObject<null>[], WheelInfoOptions[]] => {
+): [React.MutableRefObject<any>[], WheelInfo[]] => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const wheels = [useRef(null), useRef(null), useRef(null)];
+  const wheels = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
   const wheelInfo = {
     radius,
-    axleLocal: [1, 0, 0],
     directionLocal: [0, -1, 0],
+    axleLocal: [1, 0, 0],
     suspensionStiffness: 60,
-    frictionSlip: 5,
     suspensionRestLength: 0.1,
+    frictionSlip: 5,
+    dampingRelaxation: 2.3,
+    dampingCompression: 4.4,
+    maxSuspensionForce: 100000,
     rollInfluence: 0.01,
-    useCustomSlidingRotationalSpeed: true,
+    maxSuspensionTravel: 0.1,
     customSlidingRotationalSpeed: -30,
-    naxSuspensionForce: 100000,
-    naxSuspensionTravel: 0.1,
-    directionalLocal: [0, -1, 0],
-    chassisConnectionPointPortal: [0, 0, 0],
+    useCustomSlidingRotationalSpeed: true,
+    isFrontWheel: true,
   };
 
   const wheelInfos = [

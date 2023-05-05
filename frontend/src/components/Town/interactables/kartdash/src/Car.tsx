@@ -61,10 +61,10 @@ export function Car(): JSX.Element {
         <meshBasicMaterial transparent={true} opacity={0.3} />
         <boxGeometry args={carChassisArguments} />
       </mesh>
-      <WheelHandler wheelRef={wheels[0]} radius={wheelRadius} active={false} />
-      <WheelHandler wheelRef={wheels[1]} radius={wheelRadius} active={false} />
-      <WheelHandler wheelRef={wheels[2]} radius={wheelRadius} active={false} />
-      <WheelHandler wheelRef={wheels[3]} radius={wheelRadius} active={false} />
+      <WheelHandler wheelRef={wheels[0]} radius={wheelRadius} />
+      <WheelHandler wheelRef={wheels[1]} radius={wheelRadius} />
+      <WheelHandler wheelRef={wheels[2]} radius={wheelRadius} />
+      <WheelHandler wheelRef={wheels[3]} radius={wheelRadius} />
     </group>
   );
 }

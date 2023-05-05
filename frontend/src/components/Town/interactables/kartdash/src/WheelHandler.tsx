@@ -10,7 +10,6 @@ import { Group } from 'three';
 interface WheelHandleProps {
   radius: number;
   wheelRef: React.MutableRefObject<Group | null>;
-  active: boolean;
 }
 
 const WheelHandle = ({ radius, wheelRef }: WheelHandleProps) => {
@@ -24,10 +23,6 @@ const WheelHandle = ({ radius, wheelRef }: WheelHandleProps) => {
   );
 };
 
-export const WheelHandler = ({
-  radius,
-  wheelRef,
-  active,
-}: WheelHandleProps & { active: boolean }) => {
-  return active ? <WheelHandle radius={radius} wheelRef={wheelRef} active={active} /> : null;
+export const WheelHandler = ({ radius, wheelRef }: WheelHandleProps) => {
+  return <WheelHandle radius={radius} wheelRef={wheelRef} />;
 };
