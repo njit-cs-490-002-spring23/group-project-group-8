@@ -7,6 +7,7 @@ import React from 'react';
 export function Ramp(): JSX.Element {
   const result = useLoader(GLTFLoader, process.env.PUBLIC_URL + '/models/ramp.glb');
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const geometry = (result as any).scene.children[0].geometry;
 
   const vertices = geometry.attributes.position.array;

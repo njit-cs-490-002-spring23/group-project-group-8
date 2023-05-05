@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 type Controls = {
   [key: string]: boolean;
-  i: boolean;
-  j: boolean;
-  k: boolean;
-  l: boolean;
+  g: boolean;
+  v: boolean;
+  b: boolean;
+  n: boolean;
   arrowup: boolean;
   arrowdown: boolean;
   arrowleft: boolean;
@@ -28,10 +28,10 @@ type ChassisApi = {
 
 export const useControls = (vehicleApi: VehicleApi, chassisApi: ChassisApi) => {
   const [controls, setControls] = useState<Controls>({
-    i: false,
-    j: false,
-    k: false,
-    l: false,
+    g: false,
+    v: false,
+    b: false,
+    n: false,
     arrowup: false,
     arrowdown: false,
     arrowleft: false,

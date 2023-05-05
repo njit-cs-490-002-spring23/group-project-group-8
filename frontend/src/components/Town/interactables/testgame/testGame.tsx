@@ -23,7 +23,7 @@ function Box(props: JSX.IntrinsicElements['mesh']) {
       onClick={event => click(!clicked)}
       onPointerOver={event => hover(true)}
       onPointerOut={event => hover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
+      <boxGeometry args={[1, 4, 1]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
     </mesh>
   );
